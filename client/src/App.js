@@ -1,9 +1,10 @@
-import React from 'react'
+import React from 'react';
+import Login_page from './Page/Login_page';
 
 const App = () => {
   return (
     <div>
-      hi from app
+      <Login_page/>
     </div>
   )
 }
