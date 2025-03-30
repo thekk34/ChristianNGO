@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {React, useState } from "react";
 import axios from "axios";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import {
@@ -12,7 +12,7 @@ import { signInWithPopup } from "firebase/auth";
 import { FaGoogle, FaFacebook, FaGithub } from "react-icons/fa";
 import "./login.css";
 
-const Login_page = () => {
+const Loginpage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -94,6 +94,7 @@ const Login_page = () => {
   };
 
   return (
+    <>
     <div className="container">
       <div className="auth-box">
         <h2>{Registration ? "Register" : "Login"}</h2>
@@ -193,8 +194,9 @@ const Login_page = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
-export default Login_page;
+export default Loginpage;
 
