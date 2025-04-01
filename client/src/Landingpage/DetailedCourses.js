@@ -1,8 +1,9 @@
 import React from "react";
 import { Card, Button, Container, Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { FaStar, FaClock } from "react-icons/fa";
-import MeanImg from "../assets/images/MeanImg.jpeg";
-import MernImg from "../assets/images/MernImg.jpeg";
+import MeanImg from "../assets/images/MeanImg.jpg";
+import MernImg from "../assets/images/MernImg.jpg";
 import JavaImg from "../assets/images/JavaImg.jpg";
 import AndroidImg from "../assets/images/AndroidImg.jpg";
 import AWSimg from "../assets/images/AWSimg.jpg";
@@ -14,7 +15,7 @@ import Footer from "./Footer";
 const detailedCourses = [
   {
     title: "MEAN",
-    description: "Learn a full-stack JavaScript framework that includes MongoDB, Express.js, Angular, and Node.js for building web applications.",
+    description: "Learn a full-stack JavaScript framework that includes MongoDB, Express.js, Angular, and Node.js for building ...",
     duration: "50 hours",
     rating: 4.9,
     image: MeanImg,
@@ -55,13 +56,24 @@ const detailedCourses = [
     image: JavaImg,
   },
 ];
-const DetailedCourses = ({ goBack, scrollToSection }) =>  {
+const DetailedCourses = ({ goBack, scrollToSection }) =>  {
+  const navigate = useNavigate();
+
+  const handleViewCourse = (course) => {
+    navigate(`/course-details`, { state: { course } });
+  };
+  
   return (
     <div>
-      <Navbar scrollToSection={scrollToSection} />
+   
+      {/* <Navbar scrollToSection={scrollToSection} /> */}
    
     <section style={{ backgroundColor: "#e3f2fd", padding: "60px 0" }}>
+    <Button className="btn btn-secondary m-2" onClick={() => navigate("/home")}>
+                ← Back to Home
+            </Button>
       <Container className="text-center">
+
         <h2 className="fw-bold text-primary">All Courses</h2>
         <p className="text-muted">Browse our collection of courses to enhance your skills</p>
         <Row className="mt-4">
@@ -87,14 +99,26 @@ const DetailedCourses = ({ goBack, scrollToSection }) =>  {
                       <FaStar /> {course.rating}
                     </span>
                   </div>
-                  <Button variant="primary" className="w-100 mt-3">
+                  {/* <Button variant="primary" className="w-100 mt-3">
                     View Course
-                  </Button>
+                  </Button> */}
+                  <Button variant="primary" className="w-100 mt-3" onClick={() => handleViewCourse(course)}>
+                      View Course
+                    </Button>
+
+                    
                 </Card.Body>
               </Card>
             </Col>
           ))}
         </Row>
+        {/* <Button variant="light" className="mt-3 border" onClick={() => navigate("/home")}>
+        Back to Home
+      </Button> */}
+
+
+
+
       </Container>
     </section>
     <Footer />
