@@ -1,15 +1,16 @@
 import React from "react";
 import { Card, Button, Container, Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { FaStar, FaClock } from "react-icons/fa";
-import MeanImg from "../assets/images/MeanImg.jpeg";
-import MernImg from "../assets/images/MernImg.jpeg";
+import MeanImg from "../assets/images/MeanImg.jpg";
+import MernImg from "../assets/images/MernImg.jpg";
 import AWSimg from "../assets/images/AWSimg.jpg";
 import AzureImg from "../assets/images/AzureImg.jpg";
 
 const courses = [
   {
     title: "MEAN",
-    description: "Learn MongoDB, Express.js, Angular, and Node.js to build web applications.",
+    description: "Learn MongoDB, Express.js, Angular, and Node.js to web...",
     duration: "40 hours",
     rating: 4.8,
     image: MeanImg,
@@ -37,7 +38,20 @@ const courses = [
   },
 ];
 
+
 const Courses = ({ showDetailedCourses }) => {
+  const navigate = useNavigate();
+
+  const handleViewCourse = (course) => {
+    navigate(`/course-details`);
+  };
+
+
+  
+  
+    const handleViewDetailedCourse = (course) => {
+      navigate(`/courses/detailed`);
+    };
   return (
     <section style={{ backgroundColor: "#e3f2fd", padding: "50px 0" }}>
       <Container className="text-center" id="courses">
@@ -64,15 +78,18 @@ const Courses = ({ showDetailedCourses }) => {
                       <FaStar /> {course.rating}
                     </span>
                   </div>
-                  <Button variant="primary" className="w-100 mt-3">
+                  {/* <Button variant="primary" className="w-100 mt-3">
                     View Course
-                  </Button>
+                  </Button> */}
+                  <Button variant="primary" className="w-100 mt-3" onClick={() => handleViewCourse(course)}>
+                      View Course
+                    </Button>
                 </Card.Body>
               </Card>
             </Col>
           ))}
         </Row>
-        <Button variant="outline-primary" className="mt-3" onClick={showDetailedCourses}>
+        <Button variant="outline-primary" className="mt-3"onClick={() => handleViewDetailedCourse()}>
           View All Courses
         </Button>
       </Container>
