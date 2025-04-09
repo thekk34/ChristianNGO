@@ -1,12 +1,12 @@
 import React from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import coursesBanner from "../assets/images/home-image.jpg";
+import coursesBanner from "../../assets/images/home-image.jpg";
 
-const Home = ({ scrollToSection }) => {
+const Home = () => {
    const navigate = useNavigate();
   return (
-    <section className="py-5 mt-5 bg-light">
+    <section id="#home" className="py-5 mt-5 bg-light">
       <Container>
         <Row className="align-items-center">
           <Col lg={6} md={12} className="text-start">

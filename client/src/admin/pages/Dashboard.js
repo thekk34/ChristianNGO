@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import {
   Box,
   Grid,
@@ -25,44 +26,84 @@ import {
   Tooltip as ChartTooltip,
   ResponsiveContainer,
 } from 'recharts';
-
-// Mock data for charts
-const enrollmentData = [
-  { name: 'Jan', enrollments: 65 },
-  { name: 'Feb', enrollments: 78 },
-  { name: 'Mar', enrollments: 90 },
-  { name: 'Apr', enrollments: 85 },
-  { name: 'May', enrollments: 95 },
-  { name: 'Jun', enrollments: 100 },
-];
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
+  const navigate =useNavigate();
+  const [dashboardData, setDashboardData] = useState({
+    totalEnrollment: 0,
+    totalTasks: 0,
+    courseProgress: 0,
+    completionRate: 0,
+  });
+
+  const [enrollmentData, setEnrollmentData] = useState([]); 
+   useEffect(() => {
+      axios
+        .get("http://localhost:5000/api/verify", { withCredentials: true })
+        .then(res => {
+          if (!res.data.login) {
+            navigate("/login");
+          }
+        })
+        .catch(err => {
+          console.error("Authentication error:", err);
+          navigate("/login");
+        });
+    }, [navigate]);
+
+  // Fetch data from backend
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/dashboard');
+      setDashboardData(response.data);
+
+      // Example: Generate chart data dynamically
+      setEnrollmentData([
+        { name: 'Jan', enrollments: response.data.totalEnrollment - 50 },
+        { name: 'Feb', enrollments: response.data.totalEnrollment - 40 },
+        { name: 'Mar', enrollments: response.data.totalEnrollment - 30 },
+        { name: 'Apr', enrollments: response.data.totalEnrollment - 20 },
+        { name: 'May', enrollments: response.data.totalEnrollment - 10 },
+        { name: 'Jun', enrollments: response.data.totalEnrollment },
+      ]);
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 10000); // Auto-refresh every 10 sec
+    return () => clearInterval(interval);
+  }, []);
+
   const stats = [
     {
       title: 'Total Enrollments',
-      value: '1,234',
+      value: dashboardData.totalEnrollment.toLocaleString(),
       change: '+12%',
       icon: <GroupIcon sx={{ fontSize: 40, color: '#1976d2' }} />,
       color: '#1976d2',
     },
     {
-      title: 'Active Courses',
-      value: '12',
-      change: '+2',
+      title: 'Total Tasks',
+      value: dashboardData.totalTasks,
+      change: '+5',
       icon: <SchoolIcon sx={{ fontSize: 40, color: '#2e7d32' }} />,
       color: '#2e7d32',
     },
     {
       title: 'Completion Rate',
-      value: '85%',
-      change: '+5%',
+      value: `${dashboardData.completionRate}%`,
+      change: '+3%',
       icon: <AssessmentIcon sx={{ fontSize: 40, color: '#ed6c02' }} />,
       color: '#ed6c02',
     },
     {
-      title: 'Revenue Growth',
-      value: '₹45,678',
-      change: '+8%',
+      title: 'Course Progress',
+      value: `${dashboardData.courseProgress}%`,
+      change: '+4%',
       icon: <TrendingUpIcon sx={{ fontSize: 40, color: '#9c27b0' }} />,
       color: '#9c27b0',
     },
@@ -75,7 +116,7 @@ const Dashboard = () => {
           Dashboard Overview
         </Typography>
         <Tooltip title="Refresh Data">
-          <IconButton>
+          <IconButton onClick={fetchData}>
             <RefreshIcon />
           </IconButton>
         </Tooltip>
@@ -84,43 +125,28 @@ const Dashboard = () => {
       <Grid container spacing={4}>
         {stats.map((stat, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
-            <Card 
-              sx={{ 
+            <Card sx={{
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 transition: 'transform 0.2s, box-shadow 0.2s',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: 3,
-                },
+                '&:hover': { transform: 'translateY(-4px)', boxShadow: 3 },
                 background: `linear-gradient(135deg, ${stat.color}15 0%, ${stat.color}05 100%)`,
                 p: 2,
-              }}
-            >
+              }}>
               <CardContent sx={{ flexGrow: 1, p: 2 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
-                  <Box sx={{ 
-                    p: 1.5, 
-                    borderRadius: 2, 
-                    backgroundColor: `${stat.color}15`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
+                  <Box sx={{
+                      p: 1.5, borderRadius: 2, backgroundColor: `${stat.color}15`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    }}>
                     {stat.icon}
                   </Box>
-                  <Typography 
-                    variant="body2" 
-                    sx={{ 
-                      color: stat.color,
-                      fontWeight: 600,
+                  <Typography variant="body2" sx={{
+                      color: stat.color, fontWeight: 600,
                       backgroundColor: `${stat.color}15`,
-                      px: 1.5,
-                      py: 0.5,
-                      borderRadius: 1
-                    }}
-                  >
+                      px: 1.5, py: 0.5, borderRadius: 1
+                    }}>
                     {stat.change}
                   </Typography>
                 </Box>
@@ -138,12 +164,12 @@ const Dashboard = () => {
 
       <Grid container spacing={4} sx={{ mt: 4 }}>
         <Grid item xs={12} md={8}>
-          <Card sx={{ height: '100%', p: 2 , width: '500px',}}>
+          <Card sx={{ height: '100%', p: 2 }}>
             <CardContent sx={{ p: 2 }}>
-              <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, }}>
+              <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
                 Enrollment Trends
               </Typography>
-              <Box sx={{ height: 300, marginLeft: '-30px', marginRight: '10px' }}>
+              <Box sx={{ height: 300 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={enrollmentData}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -164,7 +190,7 @@ const Dashboard = () => {
           </Card>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Card sx={{ height: '100%', p: 2, width: '500px',}}>
+          <Card sx={{ height: '100%', p: 2 }}>
             <CardContent sx={{ p: 2 }}>
               <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
                 Course Progress
@@ -175,20 +201,13 @@ const Dashboard = () => {
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
                       <Typography variant="body2">{course}</Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {75 + index * 5}%
+                        {dashboardData.courseProgress + index * 5}%
                       </Typography>
                     </Box>
-                    <LinearProgress 
-                      variant="determinate" 
-                      value={75 + index * 5} 
-                      sx={{ 
-                        height: 8, 
-                        borderRadius: 4,
-                        backgroundColor: '#e0e0e0',
-                        '& .MuiLinearProgress-bar': {
-                          borderRadius: 4,
-                          backgroundColor: '#1976d2',
-                        }
+                    <LinearProgress variant="determinate"
+                      value={dashboardData.courseProgress + index * 5}
+                      sx={{ height: 8, borderRadius: 4, backgroundColor: '#e0e0e0',
+                        '& .MuiLinearProgress-bar': { borderRadius: 4, backgroundColor: '#1976d2' }
                       }}
                     />
                   </Box>
@@ -202,4 +221,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard; 
+export default Dashboard;

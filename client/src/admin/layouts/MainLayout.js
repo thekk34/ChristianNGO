@@ -1,13 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, CssBaseline, Container } from '@mui/material';
+import axios from "axios"
+import Header from "../components/Header"
 import Sidebar from '../components/Sidebar';
+import { useNavigate } from 'react-router-dom';
 
 const MainLayout = ({ children }) => {
+  const navigate=useNavigate();
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/verify", { withCredentials: true })
+      .then(res => {
+        if (!res.data.login) {
+          navigate("/login");
+        }
+      })
+      .catch(err => {
+        console.error("Authentication error:", err);
+        navigate("/login");
+      });
+  }, [navigate]);
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <CssBaseline />
-      
-      {/* Sidebar */}
+      <Header/>
       <Sidebar />
       
       {/* Main Content */}

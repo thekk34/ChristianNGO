@@ -4,7 +4,7 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider, facebookProvider, githubProvider } from "./Firebaseauth";
 import { FaGoogle, FaFacebook, FaGithub } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Registeranimation from "./Registeranimation";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -12,7 +12,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Registerpage = () => {
-  console.log("register works");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -22,36 +21,39 @@ const Registerpage = () => {
 
   const navigate = useNavigate();
   axios.defaults.withCredentials = true;
-  
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // ✅ Validate phone number
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(number)) {
       toast.error("Phone number must contain exactly 10 digits.");
       return;
     }
-    axios
-      .post("http://localhost:5000/send-otp", { email, number })
-      .then((response) => {
-        toast.success("OTP sent Sucessfully:", {position:"right-top"});
-        console.log(response.data);
-        localStorage.setItem(
-          "pendingUser",
-          JSON.stringify({ email, password, username, number })
-        );
-        navigate("/otp-verification");
-      })
-      .catch((err) => {
-        toast.error(err.response?.data?.message || "Failed to send OTP",{position:"top-right"});
-      });
+  
+    try {
+      await axios.post("http://localhost:5000/api/register", { username, email, number, password });
+      localStorage.setItem("pendingUser", JSON.stringify({ email, username, number }));
+      toast.success("User registered successfully! Check your email for OTP.", { position: "top-right" });
+      setTimeout(() => {
+        navigate("/otp");
+      }, 3000);
+  
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || "Failed to register";
+      toast.error(errorMessage, { position: "top-right" });
+    }
   };
+  
+  
 
   const signInWithGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
-     toast.success ("Google Sign-In Success:", {position:"top-right"});
-      console.log( result.user);
+      toast.success("Google Sign-In Success:", { position: "top-right" });
+      console.log(result.user);
       navigate("/landing");
     } catch (error) {
       toast.error(error.message);
@@ -61,7 +63,7 @@ const Registerpage = () => {
   const signInWithFacebook = async () => {
     try {
       const result = await signInWithPopup(auth, facebookProvider);
-      toast.success("Facebook Sign-In Success:",{position:"top-right"} );
+      toast.success("Facebook Sign-In Success:", { position: "top-right" });
       console.log(result.user);
       navigate("/landing");
     } catch (error) {
@@ -71,21 +73,18 @@ const Registerpage = () => {
 
   const signInWithGithub = async () => {
     try {
-      const result = await signInWithPopup(auth, githubProvider);  // ✅ FIXED HERE
-      toast.success("GitHub Sign-In Success:", {position:"top-right"} );
+      const result = await signInWithPopup(auth, githubProvider);
+      toast.success("GitHub Sign-In Success:", { position: "top-right" });
       console.log(result.user);
       navigate("/landing");
     } catch (error) {
       toast.error(error.message);
     }
   };
-  console.log("register");
   return (
-   
-        <div className="d-flex align-items-center justify-content-center vh-100 bg-dark text-white position-relative">
 
-{console.log("Inside return statement")}
-       <ToastContainer />
+    <div className="d-flex align-items-center justify-content-center vh-100 bg-dark text-white position-relative">
+      <ToastContainer />
       <div className="card p-4 shadow-lg position-absolute" style={{ width: "25rem", zIndex: 2 }}>
         <h2 className="text-center mb-4">SIGN UP</h2>
 
@@ -178,9 +177,9 @@ const Registerpage = () => {
 
         <div className="text-center mt-3">
           Already a User?{" "}
-          <a className="text-primary fw-bold" href="/login">
+          <Link className="text-primary fw-bold" to="/login">
             LOGIN
-          </a>
+          </Link>
         </div>
       </div>
       <Registeranimation style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }} />
