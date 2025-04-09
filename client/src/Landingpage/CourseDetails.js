@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
+import Footer from "./Footer";
 import { useNavigate, useParams } from 'react-router-dom';
 import { FaFilePdf } from "react-icons/fa";
 
@@ -73,7 +74,9 @@ const CourseDetails = ({ role }) => {
   if (!courseInfo) return <div className="text-center py-5">Loading course details...</div>;
 
   return (
-    <div className="container py-5">
+   <>
+   <div>
+   <div className="container py-5">
       <div className="row align-items-center">
         <div className="col-lg-5 text-center">
           <img
@@ -86,7 +89,7 @@ const CourseDetails = ({ role }) => {
           <h1 className="text-primary fw-bold">{courseInfo.title}</h1>
           <h3 className="fw-semibold text-dark">{courseInfo.tagline || "Course Overview"}</h3>
           <p className="text-muted">{courseInfo.description}</p>
-          <button className="btn btn-primary mt-3">Download Brochure</button>
+          <button className="btn btn-primary mt-3" >Enroll Now </button>
         </div>
       </div>
 
@@ -149,6 +152,9 @@ const CourseDetails = ({ role }) => {
         </div>
       </div>
     </div>
+    <Footer/>
+   </div>
+   </>
   );
 };
 
