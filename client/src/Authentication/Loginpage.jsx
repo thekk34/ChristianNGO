@@ -13,38 +13,42 @@ import {
 import { FaGoogle, FaFacebook, FaGithub } from "react-icons/fa";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ParticlesBackground from "./Particlebackground";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const Loginpage = () => {
+const Loginpage = ({ setRole }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [role, setRole] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+  const [role, setLocalRole] = useState("");
 
   const navigate = useNavigate();
 
+  axios.defaults.withCredentials = true;
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/login", { email, password, role });
-      toast.success("Login successful:",{position:"top-right"} );
-      // console.log(response.data);
-      setEmail("");
-      setPassword("");
-      navigate("/home");
+      const res = await axios.post("http://localhost:5000/api/login", { email, password, role });
+      
+      if (res.data.login) {
+        toast.success("Login successful", { position: "top-right" });
+        setRole(res.data.role);
+        navigate(res.data.role === 'admin' ? "/admin/dashboard" : "/");
+      } else {
+        toast.error("Email or password is incorrect", { position: "top-right" });
+      }
     } catch (err) {
-      toast.error(err.response?.data?.message || "Login failed",{position:"top-right"});
+      toast.error(err.response?.data?.message || "Login failed", { position: "top-right" });
     }
   };
+  
 
   const signInWithGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      toast.sucess("Google Sign-In Success:",{position:"top-right"} );
+      toast.sucess("Google Sign-In Success:", { position: "top-right" });
       navigate("/Landingpage/Home");
       console.log(result.user);
     } catch (error) {
@@ -55,7 +59,7 @@ const Loginpage = () => {
   const signInWithFacebook = async () => {
     try {
       const result = await signInWithPopup(auth, facebookProvider);
-      toast.sucess("Facebook Sign-In Success:",{position:"top-right"} );
+      toast.sucess("Facebook Sign-In Success:", { position: "top-right" });
       navigate("/LandingPage/Home");
       console.log(result.user);
     } catch (error) {
@@ -66,7 +70,7 @@ const Loginpage = () => {
   const signInWithGithub = async () => {
     try {
       const result = await signInWithPopup(auth, githubProvider);
-      toast.sucess("GitHub Sign-In Success:", {position:"top-right"});
+      toast.sucess("GitHub Sign-In Success:", { position: "top-right" });
       navigate("/LandingPage/Home");
       console.log(result.user);
     } catch (error) {
@@ -130,7 +134,7 @@ const Loginpage = () => {
               className="form-select"
               id="role"
               value={role}
-              onChange={(e) => setRole(e.target.value)}
+              onChange={(e) => setLocalRole(e.target.value)}
               required
             >
               <option value="">Select Role</option>
@@ -139,20 +143,6 @@ const Loginpage = () => {
             </select>
             <label htmlFor="role">Role</label>
           </div>
-
-          <div className="form-check mb-3">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              id="remember"
-              checked={rememberMe}
-              onChange={() => setRememberMe(!rememberMe)}
-            />
-            <label className="form-check-label" htmlFor="remember">
-              Remember Me
-            </label>
-          </div>
-
           <motion.button type="submit" className="btn btn-primary w-100" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             Login
           </motion.button>
@@ -161,9 +151,9 @@ const Loginpage = () => {
         {message && <p className="text-danger text-center mt-2">{message}</p>}
 
         <div className="text-center mt-2">
-          <a href="/forgot-password" className="text-danger fw-bold">
+          <Link to="/forgot" className="text-danger fw-bold">
             Forgot Password?
-          </a>
+          </Link>
         </div>
 
         <div className="text-center my-3 fw-bold">OR</div>
@@ -182,9 +172,9 @@ const Loginpage = () => {
 
         <div className="text-center mt-3">
           Need an Account?{" "}
-          <a className="text-primary fw-bold" href="/register">
+          <Link className="text-primary fw-bold" to="/register">
             SIGN UP
-          </a>
+          </Link>
         </div>
       </div>
     </div>

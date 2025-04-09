@@ -1,15 +1,16 @@
 import React from "react";
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, ListItemButton, Box, Divider } from "@mui/material";
-import { Dashboard as DashboardIcon, School as SchoolIcon, Groups as GroupsIcon, People as PeopleIcon, Settings as SettingsIcon } from "@mui/icons-material";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Dashboard as DashboardIcon, School as SchoolIcon, Groups as GroupsIcon,People as PeopleIcon  } from "@mui/icons-material";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const drawerWidth = 240;
 
 const menuItems = [
   { text: "Dashboard", icon: <DashboardIcon />, path: "/admin/dashboard" },
-  { text: "Course Management", icon: <SchoolIcon />, path: "/admin/course-management" },
-  { text: "User Enrollment", icon: <PeopleIcon />, path: "/admin/user-enrollment" },
-  { text: "Settings", icon: <SettingsIcon />, path: "/admin/settings" },
+  { text: "Course Management", icon: <SchoolIcon />, path: "/admin/course" },
+  { text: "Batch Management", icon: <GroupsIcon />, path: "/admin/batch" },
+  { text: "User Enrollment", icon: <PeopleIcon />, path: "/admin/user" },
+  // { text: "Settings", icon: <SettingsIcon />, path: "/admin/settings" },
 ];
 
 const Sidebar = () => {
@@ -17,7 +18,9 @@ const Sidebar = () => {
   const location = useLocation();
 
   return (
-    <Drawer
+   <>
+   <div className="mt-3">
+   <Drawer
       variant="permanent"
       sx={{
         width: drawerWidth,
@@ -65,6 +68,8 @@ const Sidebar = () => {
         </List>
       </Box>
     </Drawer>
+   </div>
+   </>
   );
 };
 
