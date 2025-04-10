@@ -1,4 +1,5 @@
 const Course=require("../Model/Course");
+const Enrollment=require("../Model/Enrollment")
 
 exports.getCourse=async(req,res)=>{
     try {
@@ -26,3 +27,57 @@ exports.getCourseByTitle = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
+
+
+
+// POST: Enroll user in a course
+exports.enrollUser = async (req, res) => {
+  const { courseId } = req.body;
+
+  if (!courseId) return res.status(400).json({ message: "Course ID is required." });
+
+  try {
+    const alreadyEnrolled = await Enrollment.findOne({
+      userEmail: req.email,
+      courseId
+    });
+
+    if (alreadyEnrolled) {
+      return res.status(400).json({ message: "User already enrolled in this course." });
+    }
+
+    await Enrollment.create({
+      userEmail: req.email,
+      courseId
+    });
+
+    res.status(200).json({ message: "Enrollment successful." });
+  } catch (error) {
+    console.error("Error during enrollment:", error);
+    res.status(500).json({ message: "Server error during enrollment." });
+  }
+};
+
+// GET: Check if user is enrolled in a cour
+exports.checkEnrollmentStatus = async (req, res) => {
+  const { courseId } = req.params;
+
+  try {
+    const enrollment = await Enrollment.findOne({
+      userEmail: req.email,
+      courseId
+    });
+
+    res.status(200).json({ enrolled: !!enrollment });
+  } catch (error) {
+    console.error("Error checking enrollment status:", error);
+    res.status(500).json({ message: "Server error while checking enrollment status." });
+  }
+};
+
+
+
+
+
