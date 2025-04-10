@@ -7,54 +7,52 @@ const getFileUrl = (filename) => {
   if (!filename) return null;
 
   const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
-  if (filename.endsWith(".pdf")){
+  if (filename.endsWith(".pdf")) {
     return `${baseUrl}/Uploads/chapter_pdfs/${filename}`;
   }
   else if (filename.endsWith(".png") || filename.endsWith(".jpg"))
-  return `${baseUrl}/Uploads/course_images/${filename}`; 
+    return `${baseUrl}/Uploads/course_images/${filename}`;
 };
 
-// Helper function to fetch a course with its chapters embedded
+
+
 const getCourseWithChapters = async (courseId) => {
-    const results = await Course.aggregate([
-        { $match: { _id: new mongoose.Types.ObjectId(courseId) } }, // Match specific course
-        {
-            $lookup: {
-                from: "chapters", // Collection name for Chapters
-                localField: "_id",
-                foreignField: "courseId",
-                as: "chapters" // Output array field name
-            }
-        },
-        { $limit: 1 } // We only expect one course
-    ]);
+  const results = await Course.aggregate([
+    { $match: { _id: new mongoose.Types.ObjectId(courseId) } }, 
+    {
+      $lookup: {
+        from: "chapters", 
+        localField: "_id",
+        foreignField: "courseId",
+        as: "chapters" 
+      }
+    },
+    { $limit: 1 } 
+  ]);
 
-    if (!results || results.length === 0) {
-        return null;
-    }
+  if (!results || results.length === 0) {
+    return null;
+  }
 
-    const course = results[0];
+  const course = results[0];
 
-    // --- Map results to add full URLs and match frontend expectations ---
-    return {
-        ...course,
-        // Construct full image URL
-        image: getFileUrl(course.image),
-        chapters: (course.chapters || []).map(chapter => ({
-            ...chapter,
-            // Construct full PDF URL
-            url: getFileUrl(chapter.pdf),
-             // Add fields frontend might expect (provide defaults if not stored)
-             title: chapter.title, // Already present
-             id: chapter._id, // Frontend might use 'id'
-             _id: chapter._id,
-             size: null, // Not stored in current schema
-             // Use chapter's createdAt as uploadDate (requires timestamps: true in schema)
-             uploadDate: chapter.createdAt || null,
-             // Remove fields frontend doesn't need if any (e.g., __v, courseId internal field)
-             // pdf: undefined, // Optionally remove raw filename if URL is provided
-        }))
-    };
+  return {
+    ...course,
+    
+    image: getFileUrl(course.image),
+    chapters: (course.chapters || []).map(chapter => ({
+      ...chapter,
+      url: getFileUrl(chapter.pdf),
+      title: chapter.title, // Already present
+      id: chapter._id, // Frontend might use 'id'
+      _id: chapter._id,
+      size: null, // Not stored in current schema
+      // Use chapter's createdAt as uploadDate (requires timestamps: true in schema)
+      uploadDate: chapter.createdAt || null,
+      // Remove fields frontend doesn't need if any (e.g., __v, courseId internal field)
+      // pdf: undefined, // Optionally remove raw filename if URL is provided
+    }))
+  };
 };
 
 
@@ -71,10 +69,10 @@ const addCourse = async (req, res) => {
     }
 
     const course = new Course({
-        title,
-        description,
-        duration,
-        image: imageFilename // Store only the filename
+      title,
+      description,
+      duration,
+      image: imageFilename // Store only the filename
     });
     await course.save();
 
@@ -97,26 +95,26 @@ const addChapter = async (req, res) => {
     const pdfFilename = req.file ? req.file.filename : null;
 
     if (!courseId || !chapterTitle || !pdfFilename) {
-        // Check if pdf is mandatory based on your requirements
+      // Check if pdf is mandatory based on your requirements
       return res.status(400).json({ message: "Course ID, chapter title, and PDF file are required" });
     }
 
-     // Validate courseId is a valid ObjectId
-     if (!mongoose.Types.ObjectId.isValid(courseId)) {
-         return res.status(400).json({ message: "Invalid Course ID format" });
-     }
+    // Validate courseId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(courseId)) {
+      return res.status(400).json({ message: "Invalid Course ID format" });
+    }
 
-     // Check if course exists
-     const courseExists = await Course.findById(courseId);
-     if (!courseExists) {
-        return res.status(404).json({ message: "Course not found" });
-     }
+    // Check if course exists
+    const courseExists = await Course.findById(courseId);
+    if (!courseExists) {
+      return res.status(404).json({ message: "Course not found" });
+    }
 
 
     const chapter = new Chapter({
-        courseId: courseId,
-        title: chapterTitle,
-        pdf: pdfFilename // Store only the filename
+      courseId: courseId,
+      title: chapterTitle,
+      pdf: pdfFilename // Store only the filename
     });
     await chapter.save();
 
@@ -151,20 +149,20 @@ const showCourse = async (req, res) => {
 
     // --- Map results to add full URLs and match frontend expectations ---
     const coursesFormatted = coursesWithChapters.map(course => ({
-        ...course,
-        // Construct full image URL
-        image: getFileUrl(course.image),
-        chapters: (course.chapters || []).map(chapter => ({
-            ...chapter,
-            // Construct full PDF URL
-            url: getFileUrl(chapter.pdf),
-             // Add fields frontend might expect
-             id: chapter._id, // Frontend might use 'id'
-             _id: chapter._id,
-             size: null, // Provide defaults if needed
-             uploadDate: chapter.createdAt || null, // Use createdAt if available
-             // pdf: undefined, // Optionally remove raw filename
-        }))
+      ...course,
+      // Construct full image URL
+      image: getFileUrl(course.image),
+      chapters: (course.chapters || []).map(chapter => ({
+        ...chapter,
+        // Construct full PDF URL
+        url: getFileUrl(chapter.pdf),
+        // Add fields frontend might expect
+        id: chapter._id, // Frontend might use 'id'
+        _id: chapter._id,
+        size: null, // Provide defaults if needed
+        uploadDate: chapter.createdAt || null, // Use createdAt if available
+        // pdf: undefined, // Optionally remove raw filename
+      }))
     }));
 
     res.status(200).json(coursesFormatted);
@@ -180,9 +178,9 @@ const showCourse = async (req, res) => {
 const editCourse = async (req, res) => {
   try {
     const courseId = req.params.id;
-     if (!mongoose.Types.ObjectId.isValid(courseId)) {
-         return res.status(400).json({ message: "Invalid Course ID format" });
-     }
+    if (!mongoose.Types.ObjectId.isValid(courseId)) {
+      return res.status(400).json({ message: "Invalid Course ID format" });
+    }
 
     const course = await getCourseWithChapters(courseId); // Use helper
 
@@ -196,41 +194,49 @@ const editCourse = async (req, res) => {
   }
 };
 
-// Update Course
+
+
 const updateCourse = async (req, res) => {
   try {
-     const courseId = req.params.id;
-     if (!mongoose.Types.ObjectId.isValid(courseId)) {
-         return res.status(400).json({ message: "Invalid Course ID format" });
-     }
-
+    const courseId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(courseId)) {
+      return res.status(400).json({ message: "Invalid Course ID format" });
+    }
+    if (!req.body || !req.body.title || !req.body.description || !req.body.duration) {
+      return res.status(400).json({ message: "Title, description, and duration are required in the request body." });
+    }
     const { title, description, duration } = req.body;
-    // Check if a new image file was uploaded
     const imageFilename = req.file ? req.file.filename : undefined;
 
     const updatedFields = { title, description, duration };
-    // Only include image in update if a new file was provided
     if (imageFilename) {
-        updatedFields.image = imageFilename;
-         // TODO: Consider deleting the OLD image file from storage here
+      updatedFields.image = imageFilename;
+    } else {
+      return res.json({message:"No new image file provided. Image field not updated."})
     }
 
-    const updatedCourseDoc = await Course.findByIdAndUpdate(courseId, updatedFields, {
-      new: false, // Return the *old* doc to potentially get old image name for deletion
-    });
-
+    const updatedCourseDoc = await Course.findByIdAndUpdate(
+      courseId,
+      updatedFields,
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+  
     if (!updatedCourseDoc) {
       return res.status(404).json({ message: "Course not found" });
     }
-
-    // Now fetch the fully updated course with chapters using the helper
     const courseWithDetails = await getCourseWithChapters(courseId);
-
-    res.status(200).json(courseWithDetails); // Send the updated, detailed course object
-
+    if (!courseWithDetails) {
+      return res.status(404).json({ message: "Course could not be retrieved after update." });
+    }
+    res.status(200).json(courseWithDetails);
   } catch (err) {
-    console.error("Error updating course:", err);
-    res.status(500).json({ message: "Server error", error: err.message });
+    if (err.name === 'ValidationError') {
+      return res.status(400).json({ message: "Validation Error: " + err.message, error: err });
+    }
+    res.status(500).json({ message: "Server error during course update.", error: err.message });
   }
 };
 
@@ -238,9 +244,9 @@ const updateCourse = async (req, res) => {
 const deleteCourse = async (req, res) => {
   try {
     const courseId = req.params.id;
-     if (!mongoose.Types.ObjectId.isValid(courseId)) {
-         return res.status(400).json({ message: "Invalid Course ID format" });
-     }
+    if (!mongoose.Types.ObjectId.isValid(courseId)) {
+      return res.status(400).json({ message: "Invalid Course ID format" });
+    }
 
     // Find the course to potentially get filenames for deletion from storage
     const course = await Course.findById(courseId);

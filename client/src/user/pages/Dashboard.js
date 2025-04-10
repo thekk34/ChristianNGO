@@ -1,34 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, Button } from "react-bootstrap";
-import { FaCalendarAlt, FaClock, FaUserFriends, FaUser } from "react-icons/fa";
+import {  Button } from "react-bootstrap";
+// import { FaCalendarAlt, FaClock, FaUserFriends, FaUser } from "react-icons/fa";
 
-const initialBatches = [
-  {
-    id: 1,
-    title: "Web Development Basics",
-    status: "active",
-    date: "2024-04-01 - 2024-06-30",
-    time: "10:00 AM - 12:00 PM",
-    enrolled: "15 / 25 students enrolled",
-    instructor: "Nithish",
-  },
-  {
-    id: 2,
-    title: "Advanced JavaScript",
-    status: "upcoming",
-    date: "2024-05-01 - 2024-07-30",
-    time: "2:00 PM - 4:00 PM",
-    enrolled: "8 / 20 students enrolled",
-    instructor: "Hushnara",
-  },
-];
+// const initialBatches = [
+//   {
+//     id: 1,
+//     title: "Web Development Basics",
+//     status: "active",
+//     date: "2024-04-01 - 2024-06-30",
+//     time: "10:00 AM - 12:00 PM",
+//     enrolled: "15 / 25 students enrolled",
+//     instructor: "Nithish",
+//   },
+//   {
+//     id: 2,
+//     title: "Advanced JavaScript",
+//     status: "upcoming",
+//     date: "2024-05-01 - 2024-07-30",
+//     time: "2:00 PM - 4:00 PM",
+//     enrolled: "8 / 20 students enrolled",
+//     instructor: "Hushnara",
+//   },
+// ];
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("Guest");
   const [enrolledCourses, setEnrolledCourses] = useState([]);
-  const [batches, setBatches] = useState(initialBatches);
+  // const [batches, setBatches] = useState(initialBatches);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("loggedInUser");
@@ -36,19 +36,12 @@ const Dashboard = () => {
       setUsername(storedUser);
     }
 
-    const storedCourses =
-      JSON.parse(localStorage.getItem("enrolledCourses")) || [
-        { id: 1, name: "MERN Stack", progress: 80 },
-        { id: 2, name: "AWS", progress: 50 },
-        { id: 3, name: "Python", progress: 100 },
-        { id: 4, name: "React", progress: 70 },
-      ];
-
+    const storedCourses = JSON.parse(localStorage.getItem("enrolledCourses")) || [];
     setEnrolledCourses(storedCourses);
   }, []);
 
   const handleViewCourse = (course) => {
-    navigate("/course-details");
+    navigate(`/details/${course.name}`);
   };
 
   return (
@@ -67,10 +60,13 @@ const Dashboard = () => {
                 className="list-group-item d-flex justify-content-between align-items-center"
               >
                 {course.name}
-                <span className="badge bg-success">
-                  {course.progress}% Completed
-                </span>
-                <Button className="btn btn-primary btn-sm" onClick={() => handleViewCourse(course)}>
+                {/* <span className="badge bg-success">
+                  {course.progress || 0}% Completed
+                </span> */}
+                <Button
+                  className="btn btn-primary btn-sm"
+                  onClick={() => handleViewCourse(course)}
+                >
                   Go To Course
                 </Button>
               </li>
@@ -82,8 +78,8 @@ const Dashboard = () => {
       </div>
 
       {/* Upcoming Courses Section */}
-      <h4 className="mt-4">Upcoming Courses</h4>
-      <div className="row">
+      {/* <h4 className="mt-4">Upcoming Courses</h4> */}
+      {/* <div className="row">
         {batches.map((batch) => (
           <div key={batch.id} className="col-md-6 mb-4">
             <Card className="shadow-sm">
@@ -124,7 +120,7 @@ const Dashboard = () => {
             </Card>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };
