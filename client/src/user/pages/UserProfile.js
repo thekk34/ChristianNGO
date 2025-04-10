@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { FaUserTie, FaEnvelope, FaPhoneAlt, FaUser } from "react-icons/fa";
+import { FaUserTie, FaEnvelope,  FaUser ,FaPhoneAlt,} from "react-icons/fa";
 
 const UserProfile = () => {
   const navigate = useNavigate();
