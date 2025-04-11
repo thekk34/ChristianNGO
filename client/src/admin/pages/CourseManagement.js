@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import {useNavigate} from "react-router-dom"
 
 import {
     Box, Button, // Removed unused Paper, Table components
@@ -20,6 +21,7 @@ import {
 const API_URL = "http://localhost:5000"; // Base API URL
 
 const CourseManagement = () => {
+    const navigate=useNavigate();
     const [courses, setCourses] = useState([]);
     const [open, setOpen] = useState(false); // For Course Add/Edit Dialog
     const [editingCourse, setEditingCourse] = useState(null);
@@ -39,6 +41,22 @@ const CourseManagement = () => {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
+
+    useEffect(() => {
+        axios
+          .get(`${API_URL}/api/verify`, { withCredentials: true })
+          .then(res => {
+            if (!res.data.login) {
+              navigate("/login");
+            }
+          })
+          .catch(err => {
+            console.error("Authentication error:", err);
+            navigate("/login");
+          });
+      }, [navigate]);
+    
 
     useEffect(() => {
         fetchCourses();

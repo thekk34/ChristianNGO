@@ -27,6 +27,7 @@ const ForgotPasswordPage = () => {
       // Store OTP context and email in localStorage for OTP page to use
       localStorage.setItem("resetEmail", email);
       localStorage.setItem("otpPurpose", "forgot");
+      
 
       toast.success(response.data.message || "OTP sent to your email!");
       navigate("/otp");

@@ -5,11 +5,12 @@ exports.GetDashboardData = async (req, res) => {
     if (!dashboardinfo) {
       return res.status(404).json({ message: "dashboard data is missing" });
     }
-    response.json(dashboardinfo);
+    return res.json(dashboardinfo); // ✅ Fixed 'response' → 'res'
   } catch (error) {
-     return res.status(500).json({ message: "Unable to load dashboard data ", error });
+     return res.status(500).json({ message: "Unable to load dashboard data", error });
   }
 };
+
 
 
 exports.UpdateDashboardData = async (req, res) => {
@@ -27,4 +28,7 @@ exports.UpdateDashboardData = async (req, res) => {
     res.status(500).json({ message: "Failed to update dashboard data", error });
   }
 };
+
+
+
 
