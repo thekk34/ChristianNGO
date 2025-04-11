@@ -44,9 +44,6 @@ coverage/
 *.bak
 Thumbs.db
 
-# Ignore uploads and generated files (if any)
-uploads/
-public/uploads/
 
 # Ignore cloud deployment configurations (if using)
 .cloud/
