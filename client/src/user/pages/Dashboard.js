@@ -1,43 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {  Button } from "react-bootstrap";
-// import { FaCalendarAlt, FaClock, FaUserFriends, FaUser } from "react-icons/fa";
-
-// const initialBatches = [
-//   {
-//     id: 1,
-//     title: "Web Development Basics",
-//     status: "active",
-//     date: "2024-04-01 - 2024-06-30",
-//     time: "10:00 AM - 12:00 PM",
-//     enrolled: "15 / 25 students enrolled",
-//     instructor: "Nithish",
-//   },
-//   {
-//     id: 2,
-//     title: "Advanced JavaScript",
-//     status: "upcoming",
-//     date: "2024-05-01 - 2024-07-30",
-//     time: "2:00 PM - 4:00 PM",
-//     enrolled: "8 / 20 students enrolled",
-//     instructor: "Hushnara",
-//   },
-// ];
+import { Button } from "react-bootstrap";
+import axios from "axios";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("Guest");
   const [enrolledCourses, setEnrolledCourses] = useState([]);
-  // const [batches, setBatches] = useState(initialBatches);
+
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("loggedInUser");
-    if (storedUser) {
-      setUsername(storedUser);
-    }
+    localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("enrolledCourses");
+  }, []);
 
-    const storedCourses = JSON.parse(localStorage.getItem("enrolledCourses")) || [];
-    setEnrolledCourses(storedCourses);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/enrollCourse", {
+          withCredentials: true,
+        });
+
+        setUsername(res.data.username || "User");
+        setEnrolledCourses(res.data.courses || []);
+      } catch (err) {
+        console.error("Error fetching dashboard data:", err);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const handleViewCourse = (course) => {
@@ -60,9 +51,6 @@ const Dashboard = () => {
                 className="list-group-item d-flex justify-content-between align-items-center"
               >
                 {course.name}
-                {/* <span className="badge bg-success">
-                  {course.progress || 0}% Completed
-                </span> */}
                 <Button
                   className="btn btn-primary btn-sm"
                   onClick={() => handleViewCourse(course)}
@@ -76,51 +64,6 @@ const Dashboard = () => {
           <p className="text-muted">No courses enrolled yet.</p>
         )}
       </div>
-
-      {/* Upcoming Courses Section */}
-      {/* <h4 className="mt-4">Upcoming Courses</h4> */}
-      {/* <div className="row">
-        {batches.map((batch) => (
-          <div key={batch.id} className="col-md-6 mb-4">
-            <Card className="shadow-sm">
-              <Card.Body>
-                <div className="d-flex justify-content-between mb-2">
-                  <Card.Title>{batch.title}</Card.Title>
-                  <span className={`badge ${batch.status === "active" ? "bg-success" : "bg-warning"}`}>
-                    {batch.status.charAt(0).toUpperCase() + batch.status.slice(1)}
-                  </span>
-                </div>
-
-                <div className="mb-2">
-                  <div className="d-flex align-items-center">
-                    <FaCalendarAlt className="me-2" />
-                    <p className="mb-0">{batch.date}</p>
-                  </div>
-                  <div className="d-flex align-items-center">
-                    <FaClock className="me-2" />
-                    <p className="mb-0">{batch.time}</p>
-                  </div>
-                  <div className="d-flex align-items-center">
-                    <FaUserFriends className="me-2" />
-                    <p className="mb-0">{batch.enrolled}</p>
-                  </div>
-                </div>
-
-                <div className="border-top my-2" />
-
-                <div className="d-flex align-items-center">
-                  <FaUser className="me-2" />
-                  <div>
-                    <p className="mb-0 fw-bold">{batch.instructor}</p>
-                    <p className="text-muted mb-0">Instructor</p>
-                  </div>
-                </div>
-                <Button className="btn btn-primary mt-2">Enroll Now</Button>
-              </Card.Body>
-            </Card>
-          </div>
-        ))}
-      </div> */}
     </div>
   );
 };

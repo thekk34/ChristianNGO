@@ -28,11 +28,26 @@ exports.getCourseByTitle = async (req, res) => {
   }
 };
 
+exports.getEnrolledCourses = async (req, res) => {
+  try {
+    const userEmail = req.email;
+
+    const enrolled = await Enrollment.find({ userEmail }).populate("courseId");
+
+    const courses = enrolled.map((enroll) => ({
+      id: enroll.courseId._id,
+      name: enroll.courseId.title,
+    }));
+
+    res.status(200).json({ username: req.username, courses });
+  } catch (error) {
+    console.error("Error fetching enrolled courses:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 
 
-
-// POST: Enroll user in a course
 exports.enrollUser = async (req, res) => {
   const { courseId } = req.body;
 
@@ -60,6 +75,7 @@ exports.enrollUser = async (req, res) => {
   }
 };
 
+
 // GET: Check if user is enrolled in a cour
 exports.checkEnrollmentStatus = async (req, res) => {
   const { courseId } = req.params;
@@ -76,7 +92,6 @@ exports.checkEnrollmentStatus = async (req, res) => {
     res.status(500).json({ message: "Server error while checking enrollment status." });
   }
 };
-
 
 
 

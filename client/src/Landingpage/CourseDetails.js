@@ -114,16 +114,6 @@ const CourseDetails = ({ role }) => {
       .then(res => {
         alert(res.data.message);
         setIsEnrolled(true);
-  
-        // Save course info to localStorage
-        const storedCourses = JSON.parse(localStorage.getItem("enrolledCourses")) || [];
-        const newCourse = {
-          id: courseInfo._id,
-          name: courseInfo.title,
-        };
-  
-        const updatedCourses = [...storedCourses, newCourse];
-        localStorage.setItem("enrolledCourses", JSON.stringify(updatedCourses));
       })
       .catch(err => {
         console.error("Enrollment error:", err);
@@ -133,6 +123,7 @@ const CourseDetails = ({ role }) => {
         setLoadingEnroll(false);
       });
   };
+  
   
   const toggleAccordion = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
