@@ -26,7 +26,6 @@ const Registerpage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    // ✅ Validate phone number
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(number)) {
       toast.error("Phone number must contain exactly 10 digits.");
@@ -34,18 +33,28 @@ const Registerpage = () => {
     }
   
     try {
-      await axios.post("http://localhost:5000/api/register", { username, email, number, password });
+      await axios.post("http://localhost:5000/api/register", {
+        username,
+        email,
+        number,
+        password,
+      });
+  
       localStorage.setItem("pendingUser", JSON.stringify({ email, username, number }));
-      toast.success("User registered successfully! Check your email for OTP.", { position: "top-right" });
+      localStorage.setItem("otpPurpose", "signup"); // ✅ KEY FIX
+      toast.success("User registered successfully! Check your email for OTP.", {
+        position: "top-right",
+      });
+  
       setTimeout(() => {
         navigate("/otp");
       }, 3000);
-  
     } catch (err) {
       const errorMessage = err.response?.data?.message || "Failed to register";
       toast.error(errorMessage, { position: "top-right" });
     }
   };
+  
   
   
 

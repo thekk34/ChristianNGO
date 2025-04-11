@@ -19,10 +19,11 @@ const OtpVerificationPage = () => {
       storedPurpose === "signup"
         ? JSON.parse(localStorage.getItem("pendingUser"))?.email
         : localStorage.getItem("resetEmail");
+    
 
     if (!storedPurpose || !storedEmail) {
       toast.error("OTP verification session expired. Please try again.");
-      navigate(storedPurpose === "signup" ? "/register" : "/forgotPassword");
+      navigate(storedPurpose === "signup" ? "/register" : "/otp");
     } else {
       setPurpose(storedPurpose);
       setEmail(storedEmail);
