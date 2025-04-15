@@ -1,8 +1,10 @@
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
     .drop-down-menu {
         left: 0;
     }
+}
 
+@media (max-width: 767px) {
     .mobile-dashboard {
         flex-direction: column !important;
     }
