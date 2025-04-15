@@ -1,0 +1,32 @@
+@media (max-width: 767px) {
+    .drop-down-menu {
+        left: 0;
+    }
+
+    .mobile-dashboard {
+        flex-direction: column !important;
+    }
+
+    .mobile-side-bar {
+        width: 100% !important;
+       height: auto !important;
+       padding: 0.4rem !important;
+    }
+
+    .mobile-nav {
+        flex-direction: row !important;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mobile-profile {
+        min-height: auto !important;
+        margin-top: 30px;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px){
+    .tab-view{
+        min-height: 326px !important;
+    }
+  }

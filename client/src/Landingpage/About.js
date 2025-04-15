@@ -17,7 +17,7 @@ const About = () => {
           </p>
           <Row className="justify-content-center mt-4">
             <Col md={3} className="mb-3">
-              <Card className="border-0 shadow-sm p-3" style={{ backgroundColor: "#ffffff" }}>
+              <Card className="border-0 shadow-sm p-3 tab-view" style={{ backgroundColor: "#ffffff" }}>
                 <Card.Body>
                   <PeopleFill size={30} className="mb-2 text-primary" />
                   <Card.Title className="fw-bold text-dark">Expert Instructors</Card.Title>
@@ -28,7 +28,7 @@ const About = () => {
               </Card>
             </Col>
             <Col md={3} className="mb-3">
-              <Card className="border-0 shadow-sm p-3" style={{ backgroundColor: "#ffffff" }}>
+              <Card className="border-0 shadow-sm p-3 tab-view" style={{ backgroundColor: "#ffffff" }}>
                 <Card.Body>
                   <ClockFill size={30} className="mb-2 text-primary" />
                   <Card.Title className="fw-bold text-dark">Flexible Learning</Card.Title>
@@ -39,7 +39,7 @@ const About = () => {
               </Card>
             </Col>
             <Col md={3} className="mb-3">
-              <Card className="border-0 shadow-sm p-3" style={{ backgroundColor: "#ffffff" }}>
+              <Card className="border-0 shadow-sm p-3 tab-view" style={{ backgroundColor: "#ffffff" }}>
                 <Card.Body>
                   <BookFill size={30} className="mb-2 text-primary" />
                   <Card.Title className="fw-bold text-dark">Diverse Courses</Card.Title>

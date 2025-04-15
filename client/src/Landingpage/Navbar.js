@@ -4,6 +4,7 @@ import { FaBars, FaSignInAlt, FaUserCircle } from "react-icons/fa";
 import profileImage from "../assets/images/web-development.jpg";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import  "./Navbar.css";
 
 const Navbar = ({ role }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -72,7 +73,7 @@ const Navbar = ({ role }) => {
                 </button>
                 {dropdownOpen && (
                   <ul
-                    className="dropdown-menu dropdown-menu-end show position-absolute"
+                  className={`dropdown-menu dropdown-menu-end show position-absolute ${menuOpen ? 'drop-down-menu' : ''}`}
                     style={{ right: "0px", top: "50px", backgroundColor: "#bbdefb" }}
                   >
                     <li className="dropdown-header fw-bold">
