@@ -48,8 +48,8 @@ const UserProfile = () => {
 
   return (
     <div
-      className="container-fluid d-flex justify-content-center align-items-center px-3"
-      style={{ minHeight: "100vh", backgroundColor: "#f5f5f5" }}
+      className="container-fluid d-flex justify-content-center align-items-center px-3 mobile-profile"
+      style={{ backgroundColor: "#f5f5f5" }}
     >
       <div
         className="card w-100 shadow-sm p-4"

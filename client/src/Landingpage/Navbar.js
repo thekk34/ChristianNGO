@@ -2,14 +2,16 @@ import React, { useState, useRef, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaBars, FaSignInAlt, FaUserCircle } from "react-icons/fa";
 import profileImage from "../assets/images/web-development.jpg";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom"; 
 import axios from "axios";
+import "./Navbar.css";
 
 const Navbar = ({ role }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [username, setUsername] = useState("");
   const dropdownRef = useRef(null);
+  const location = useLocation(); 
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -28,6 +30,7 @@ const Navbar = ({ role }) => {
     }
   }, [role]);
 
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -37,6 +40,11 @@ const Navbar = ({ role }) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+
+  useEffect(() => {
+    setDropdownOpen(false);
+  }, [location.pathname]);
 
   return (
     <div className="mb-5">
@@ -72,7 +80,7 @@ const Navbar = ({ role }) => {
                 </button>
                 {dropdownOpen && (
                   <ul
-                    className="dropdown-menu dropdown-menu-end show position-absolute"
+                    className={`dropdown-menu dropdown-menu-end show position-absolute ${menuOpen ? 'drop-down-menu' : ''}`}
                     style={{ right: "0px", top: "50px", backgroundColor: "#bbdefb" }}
                   >
                     <li className="dropdown-header fw-bold">
@@ -109,3 +117,4 @@ const Navbar = ({ role }) => {
 };
 
 export default Navbar;
+

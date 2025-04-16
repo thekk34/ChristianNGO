@@ -40,7 +40,7 @@ const Course = () => {
             <Row className="mt-4">
               {courses.map((course, index) => (
                 <Col md={6} lg={3} key={index} className="mb-4">
-                  <Card className="shadow-sm border-0 p-3" style={{ backgroundColor: "#ffffff" }}>
+                  <Card className="shadow-sm border-0 p-3 desktop-coursecard" style={{ backgroundColor: "#ffffff" }}>
                     {course.image && (
                       <Card.Img
                         variant="top"
