@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaBars, FaSignInAlt, FaUserCircle } from "react-icons/fa";
 import profileImage from "../assets/images/web-development.jpg";
-import { Link, useLocation } from "react-router-dom"; 
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import "./Navbar.css";
 
@@ -11,7 +11,7 @@ const Navbar = ({ role }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [username, setUsername] = useState("");
   const dropdownRef = useRef(null);
-  const location = useLocation(); 
+  const location = useLocation();
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -30,7 +30,6 @@ const Navbar = ({ role }) => {
     }
   }, [role]);
 
-  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -41,16 +40,21 @@ const Navbar = ({ role }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-
+  // Close dropdown when route changes
   useEffect(() => {
     setDropdownOpen(false);
   }, [location.pathname]);
+
+  // Close menu on link click
+  const handleNavLinkClick = () => {
+    setMenuOpen(false);
+  };
 
   return (
     <div className="mb-5">
       <nav className="navbar navbar-expand-lg fixed-top" style={{ backgroundColor: "rgba(211, 164, 234, 0.8)" }}>
         <div className="container-fluid">
-          <Link className="navbar-brand fw-bold" to="/">
+          <Link className="navbar-brand fw-bold" to="/" onClick={handleNavLinkClick}>
             ChristianNGO
           </Link>
 
@@ -60,10 +64,18 @@ const Navbar = ({ role }) => {
 
           <div className={`collapse navbar-collapse ${menuOpen ? "show" : ""}`}>
             <ul className="navbar-nav mx-auto text-center fw-bold">
-              <li className="nav-item"><Link to="/" className="nav-link">Home</Link></li>
-              <li className="nav-item"><Link to="/about" className="nav-link">About</Link></li>
-              <li className="nav-item"><Link to="/course" className="nav-link">Courses</Link></li>
-              <li className="nav-item"><Link to="/contact" className="nav-link">Contact</Link></li>
+              <li className="nav-item">
+                <Link to="/" className="nav-link" onClick={handleNavLinkClick}>Home</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/about" className="nav-link" onClick={handleNavLinkClick}>About</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/course" className="nav-link" onClick={handleNavLinkClick}>Courses</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/contact" className="nav-link" onClick={handleNavLinkClick}>Contact</Link>
+              </li>
             </ul>
           </div>
 
@@ -83,21 +95,19 @@ const Navbar = ({ role }) => {
                     className={`dropdown-menu dropdown-menu-end show position-absolute ${menuOpen ? 'drop-down-menu' : ''}`}
                     style={{ right: "0px", top: "50px", backgroundColor: "#bbdefb" }}
                   >
-                    <li className="dropdown-header fw-bold">
-                      {username || "Loading..."}
-                    </li>
+                    <li className="dropdown-header fw-bold">{username || "Loading..."}</li>
                     <li>
-                      <Link className="dropdown-item" to="/user/dashboard">
+                      <Link className="dropdown-item" to="/user/dashboard" onClick={handleNavLinkClick}>
                         Dashboard
                       </Link>
                     </li>
                     <li>
-                      <Link className="dropdown-item" to="/user/profile">
+                      <Link className="dropdown-item" to="/user/profile" onClick={handleNavLinkClick}>
                         Profile
                       </Link>
                     </li>
                     <li>
-                      <Link className="dropdown-item text-danger" to="/logout">
+                      <Link className="dropdown-item text-danger" to="/logout" onClick={handleNavLinkClick}>
                         Log Out
                       </Link>
                     </li>
@@ -105,7 +115,7 @@ const Navbar = ({ role }) => {
                 )}
               </>
             ) : (
-              <Link className="btn btn-primary d-flex align-items-center" to="/login">
+              <Link className="btn btn-primary d-flex align-items-center" to="/login" onClick={handleNavLinkClick}>
                 <FaSignInAlt className="me-2" /> Login
               </Link>
             )}
