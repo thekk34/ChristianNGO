@@ -3,7 +3,7 @@ import React from "react";
 const ChatBot = () => {
   return (
     <iframe
-      title="ChatBot"
+      title="NGO EdTechChatBot"
       style={{
         position: "fixed",
         bottom: "20px",
@@ -18,6 +18,7 @@ const ChatBot = () => {
         <html>
           <head>
             <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+            
           </head>
           <body>
             <df-messenger
@@ -32,5 +33,4 @@ const ChatBot = () => {
     />
   );
 };
-
 export default ChatBot;
