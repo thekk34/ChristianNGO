@@ -1,3 +1,4 @@
+
 # Christian Learning NGO – Educational Platform
 
 ## Project Overview
@@ -16,6 +17,10 @@ The goal is to develop a modern, responsive, and user-friendly web platform to s
 To empower underprivileged students and learners by providing accessible, tech-driven education through a centralized online portal.
 
 ---
+
+## Course Name-Full Stack Development
+## Group-G25
+## Sure Trust Internship
 
 ## Tech Stack
 
